@@ -20,6 +20,7 @@ import {
 import PosterImage from "@/components/PosterImage";
 import PosterCard from "@/components/PosterCard";
 import { fetchTitle, type NormalizedTitle } from "@/lib/api";
+import { isFavorite as checkFavorite, addFavorite, removeFavorite } from "@/lib/favorites";
 
 export default function TitleDetailPage({
   params,
@@ -33,6 +34,10 @@ export default function TitleDetailPage({
   const [error, setError] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
   const [showFullOverview, setShowFullOverview] = useState(false);
+
+  useEffect(() => {
+    setIsFavorite(checkFavorite(id));
+  }, [id]);
 
   useEffect(() => {
     if (!id) return;
@@ -104,7 +109,16 @@ export default function TitleDetailPage({
           </button>
           <div className="flex gap-2">
             <button
-              onClick={() => setIsFavorite(!isFavorite)}
+              onClick={() => {
+                if (!title) return;
+                if (isFavorite) {
+                  removeFavorite(title.id);
+                  setIsFavorite(false);
+                } else {
+                  addFavorite(title);
+                  setIsFavorite(true);
+                }
+              }}
               className={`w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center transition-all duration-300 ${
                 isFavorite
                   ? "bg-[var(--color-accent)] scale-110"
@@ -113,7 +127,8 @@ export default function TitleDetailPage({
             >
               <Heart size={20} className={isFavorite ? "fill-white" : ""} />
             </button>
-            <button className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center hover:bg-black/70 transition-colors">
+            {/* Oculto por ahora; mostrar cuando implementemos compartir */}
+            <button className="hidden w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center hover:bg-black/70 transition-colors">
               <Share2 size={20} />
             </button>
           </div>
