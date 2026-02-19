@@ -1,21 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Heart, Search } from "lucide-react";
 import PosterCard from "@/components/PosterCard";
-import { MOCK_TITLES } from "@/lib/mock-data";
+import { getFavorites } from "@/lib/favorites";
+import type { NormalizedTitle } from "@/lib/api";
 
 const TABS = ["Favoritos", "Por ver", "Vistos"];
 
-const mockFavorites = MOCK_TITLES.slice(0, 4);
-const mockWatchlist = MOCK_TITLES.slice(4, 7);
-const mockWatched = MOCK_TITLES.slice(7, 10);
-
 export default function FavoritesPage() {
   const [activeTab, setActiveTab] = useState(0);
+  const [favorites, setFavorites] = useState<NormalizedTitle[]>([]);
 
-  const titles = activeTab === 0 ? mockFavorites : activeTab === 1 ? mockWatchlist : mockWatched;
+  useEffect(() => {
+    setFavorites(getFavorites());
+  }, []);
+
+  // Re-read when returning to this page (e.g. after removing a favorite elsewhere)
+  useEffect(() => {
+    const onStorage = () => setFavorites(getFavorites());
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  const titles: NormalizedTitle[] = activeTab === 0 ? favorites : [];
 
   return (
     <div className="px-4 pt-6">
