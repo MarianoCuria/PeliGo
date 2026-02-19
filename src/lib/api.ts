@@ -9,7 +9,10 @@ export async function fetchHome(): Promise<{
   nowPlaying: NormalizedTitle[];
 }> {
   const res = await fetch(`${BASE}/api/home`);
-  if (!res.ok) throw new Error("Error al cargar home");
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error((body as { error?: string }).error || "Error al cargar home");
+  }
   return res.json();
 }
 
