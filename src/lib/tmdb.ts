@@ -1,11 +1,10 @@
 const BASE_URL = "https://api.themoviedb.org/3";
 const IMG_BASE = "https://image.tmdb.org/t/p";
 
-function apiKey() {
+function apiKey(): string {
   const key = process.env.TMDB_API_KEY;
-  if (!key || key === "TU_API_KEY_ACA") {
-    throw new Error("TMDB_API_KEY no configurada en .env.local");
-  }
+  // Never throw here so Vercel build never fails; at runtime missing key → TMDB returns 401
+  if (!key || key === "TU_API_KEY_ACA") return "";
   return key;
 }
 

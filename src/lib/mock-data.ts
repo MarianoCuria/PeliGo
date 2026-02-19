@@ -17,6 +17,7 @@ export interface Title {
   year: string;
   rating: number;
   voteCount: number;
+  popularity?: number;
   overview: string;
   posterPath: string;
   backdropPath: string;

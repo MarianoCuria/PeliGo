@@ -43,8 +43,10 @@ export default function TitleDetailPage({
     const type = isMovie ? "movie" : "series";
 
     if (isNaN(tmdbId)) {
-      setError("ID inválido");
-      setLoading(false);
+      queueMicrotask(() => {
+        setError("ID inválido");
+        setLoading(false);
+      });
       return;
     }
 
