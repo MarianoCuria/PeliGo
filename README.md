@@ -1,4 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PeliGo
+
+App para buscar dónde ver películas y series (Argentina). Next.js + TMDB.
+
+---
+
+## Subir cambios a GitHub (si `git push` falla)
+
+El remoto está en **SSH** (`git@github.com:MarianoCuria/PeliGo.git`). Si ves `Permission denied (publickey)`:
+
+### Opción A – Usar HTTPS con token (rápido)
+
+En la terminal, dentro de esta carpeta:
+
+```bash
+git remote set-url origin https://github.com/MarianoCuria/PeliGo.git
+git push -u origin feature/peligo-full-app
+```
+
+Cuando pida usuario: tu usuario de GitHub. Cuando pida contraseña: un **Personal Access Token** (no la contraseña de la cuenta).
+
+- Crear token: GitHub → Settings → Developer settings → Personal access tokens → Generate new token (classic). Darle permiso `repo`. Copiar el token y pegarlo cuando git pida la contraseña.
+
+### Opción B – Configurar SSH
+
+```bash
+# Ver si tenés clave
+ls -la ~/.ssh/id_*.pub
+
+# Si no hay, crear una
+ssh-keygen -t ed25519 -C "tu@email.com" -f ~/.ssh/id_ed25519 -N ""
+
+# Copiar la clave pública (luego pegarla en GitHub)
+cat ~/.ssh/id_ed25519.pub
+```
+
+En GitHub: **Settings** → **SSH and GPG keys** → **New SSH key** → pegar el contenido de `id_ed25519.pub`. Después:
+
+```bash
+git push -u origin feature/peligo-full-app
+```
+
+Luego en GitHub abrís un **Pull Request** de la rama `feature/peligo-full-app` hacia `main`.
+
+---
 
 ## Getting Started
 
