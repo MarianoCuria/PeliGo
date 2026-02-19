@@ -228,11 +228,12 @@ export default function TitleDetailPage({
                       </div>
                     </div>
                   </div>
+                  {/* Oculto por ahora; quitar "hidden" cuando enlacemos a cada plataforma */}
                   <a
                     href={platform.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--color-accent)] text-white text-sm font-semibold hover:bg-[var(--color-accent-hover)] transition-colors shadow-[0_4px_20px_rgba(230,57,70,0.25)]"
+                    className="hidden flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--color-accent)] text-white text-sm font-semibold hover:bg-[var(--color-accent-hover)] transition-colors shadow-[0_4px_20px_rgba(230,57,70,0.25)]"
                   >
                     Ver
                     <ExternalLink size={14} />
