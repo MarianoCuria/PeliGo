@@ -188,8 +188,8 @@ export default function ProfilePage() {
 
       {/* Footer */}
       <div className="text-center text-xs text-[var(--color-text-secondary)] pb-4 space-y-1">
-        <p>PeliGo v1.0.0</p>
         <p>Hecho con ❤️ en Argentina</p>
+        <p>All rights reserved © MarianoCuria</p>
       </div>
     </div>
   );
