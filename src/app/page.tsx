@@ -142,6 +142,12 @@ export default function HomePage() {
           </div>
         )}
       </section>
+
+      {/* Footer */}
+      <div className="text-center text-xs text-[var(--color-text-secondary)] pt-8 pb-4 space-y-1">
+        <p>Hecho con ❤️ en Argentina</p>
+        <p>All rights reserved © MarianoCuria</p>
+      </div>
     </div>
   );
 }
