@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Heart, Search } from "lucide-react";
 import PosterCard from "@/components/PosterCard";
 import { MOCK_TITLES } from "@/lib/mock-data";
@@ -61,13 +62,13 @@ export default function FavoritesPage() {
           <p className="text-sm text-[var(--color-text-secondary)] mb-4">
             Buscá algo que te guste y agregalo a tu lista
           </p>
-          <a
+          <Link
             href="/"
             className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--color-accent)] text-white font-semibold text-sm hover:bg-[var(--color-accent-hover)] transition-colors"
           >
             <Search size={16} />
             Ir a buscar
-          </a>
+          </Link>
         </div>
       )}
     </div>

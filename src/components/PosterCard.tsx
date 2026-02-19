@@ -6,12 +6,15 @@ import type { NormalizedTitle } from "@/lib/tmdb";
 import PosterImage from "./PosterImage";
 import PlatformBadge from "./PlatformBadge";
 
+/** Same as NormalizedTitle but popularity optional for mock/favorites data */
+type PosterCardTitle = Omit<NormalizedTitle, "popularity"> & { popularity?: number };
+
 export default function PosterCard({
   title,
   rank,
   showPlatforms = true,
 }: {
-  title: NormalizedTitle;
+  title: PosterCardTitle;
   rank?: number;
   showPlatforms?: boolean;
 }) {

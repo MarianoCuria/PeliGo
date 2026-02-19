@@ -24,7 +24,7 @@ export default function TrendingPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
+    queueMicrotask(() => setLoading(true));
     fetchTrending(TYPE_TABS[typeIdx].value, PERIOD_TABS[periodIdx].value)
       .then((data) => setResults(data.results))
       .catch(() => setResults([]))

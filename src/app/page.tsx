@@ -26,7 +26,7 @@ export default function HomePage() {
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
   useEffect(() => {
-    setRecentSearches(getRecentSearches());
+    queueMicrotask(() => setRecentSearches(getRecentSearches()));
     fetchHome()
       .then((data) => {
         setTrending(data.trending);

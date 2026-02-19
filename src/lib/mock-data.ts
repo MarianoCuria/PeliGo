@@ -17,6 +17,7 @@ export interface Title {
   year: string;
   rating: number;
   voteCount: number;
+  popularity: number;
   overview: string;
   posterPath: string;
   backdropPath: string;
@@ -78,6 +79,7 @@ export const MOCK_TITLES: Title[] = [
       { name: "Netflix", slug: "netflix", logo: platformLogo("netflix"), type: "stream", quality: "4K HDR", link: "#" },
       { name: "Amazon Prime Video", slug: "amazon", logo: platformLogo("amazon"), type: "rent", quality: "HD", price: "$1.299", link: "#" },
     ],
+    popularity: 92,
     trendScore: 92,
   },
   {
@@ -100,6 +102,7 @@ export const MOCK_TITLES: Title[] = [
     platforms: [
       { name: "Amazon Prime Video", slug: "amazon", logo: platformLogo("amazon"), type: "stream", quality: "4K HDR", link: "#" },
     ],
+    popularity: 88,
     trendScore: 88,
   },
   {
@@ -123,6 +126,7 @@ export const MOCK_TITLES: Title[] = [
       { name: "HBO Max", slug: "hbo", logo: platformLogo("hbo"), type: "stream", quality: "4K", link: "#" },
       { name: "Apple TV+", slug: "apple", logo: platformLogo("apple"), type: "buy", quality: "4K", price: "$3.499", link: "#" },
     ],
+    popularity: 63,
   },
   {
     id: "4",
@@ -144,6 +148,7 @@ export const MOCK_TITLES: Title[] = [
     platforms: [
       { name: "HBO Max", slug: "hbo", logo: platformLogo("hbo"), type: "stream", quality: "4K HDR", link: "#" },
     ],
+    popularity: 95,
     trendScore: 95,
   },
   {
@@ -167,6 +172,7 @@ export const MOCK_TITLES: Title[] = [
       { name: "HBO Max", slug: "hbo", logo: platformLogo("hbo"), type: "stream", quality: "4K", link: "#" },
       { name: "Amazon Prime Video", slug: "amazon", logo: platformLogo("amazon"), type: "rent", quality: "HD", price: "$1.499", link: "#" },
     ],
+    popularity: 78,
     trendScore: 78,
   },
   {
@@ -189,6 +195,7 @@ export const MOCK_TITLES: Title[] = [
       { name: "Crunchyroll", slug: "crunchyroll", logo: platformLogo("crunchyroll"), type: "stream", quality: "HD", link: "#" },
       { name: "Netflix", slug: "netflix", logo: platformLogo("netflix"), type: "stream", quality: "HD", link: "#" },
     ],
+    popularity: 85,
     trendScore: 85,
   },
   {
@@ -213,6 +220,7 @@ export const MOCK_TITLES: Title[] = [
       { name: "Amazon Prime Video", slug: "amazon", logo: platformLogo("amazon"), type: "rent", quality: "4K", price: "$1.799", link: "#" },
       { name: "Apple TV+", slug: "apple", logo: platformLogo("apple"), type: "buy", quality: "4K HDR", price: "$4.299", link: "#" },
     ],
+    popularity: 91,
     trendScore: 91,
   },
   {
@@ -235,6 +243,7 @@ export const MOCK_TITLES: Title[] = [
     platforms: [
       { name: "HBO Max", slug: "hbo", logo: platformLogo("hbo"), type: "stream", quality: "4K HDR", link: "#" },
     ],
+    popularity: 87,
     trendScore: 87,
   },
   {
@@ -258,6 +267,7 @@ export const MOCK_TITLES: Title[] = [
       { name: "HBO Max", slug: "hbo", logo: platformLogo("hbo"), type: "stream", quality: "4K", link: "#" },
       { name: "Amazon Prime Video", slug: "amazon", logo: platformLogo("amazon"), type: "rent", quality: "HD", price: "$1.499", link: "#" },
     ],
+    popularity: 72,
     trendScore: 72,
   },
   {
@@ -281,6 +291,7 @@ export const MOCK_TITLES: Title[] = [
       { name: "Disney+", slug: "disney", logo: platformLogo("disney"), type: "stream", quality: "HD", link: "#" },
       { name: "Amazon Prime Video", slug: "amazon", logo: platformLogo("amazon"), type: "rent", quality: "4K", price: "$999", link: "#" },
     ],
+    popularity: 88,
   },
   {
     id: "11",
@@ -303,6 +314,7 @@ export const MOCK_TITLES: Title[] = [
       { name: "Paramount+", slug: "paramount", logo: platformLogo("paramount"), type: "stream", quality: "4K HDR", link: "#" },
       { name: "Amazon Prime Video", slug: "amazon", logo: platformLogo("amazon"), type: "rent", quality: "4K", price: "$1.299", link: "#" },
     ],
+    popularity: 80,
     trendScore: 80,
   },
   {
@@ -325,6 +337,7 @@ export const MOCK_TITLES: Title[] = [
     platforms: [
       { name: "HBO Max", slug: "hbo", logo: platformLogo("hbo"), type: "stream", quality: "4K HDR", link: "#" },
     ],
+    popularity: 75,
     trendScore: 75,
   },
 ];

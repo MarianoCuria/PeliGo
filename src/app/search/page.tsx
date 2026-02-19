@@ -152,6 +152,9 @@ function SearchResults() {
       {/* Filters & Sort */}
       {!loading && rawResults.length > 0 && (
         <>
+          <p className="text-sm text-[var(--color-text-secondary)] mb-2">
+            {totalResults} resultado{totalResults !== 1 ? "s" : ""}
+          </p>
           <div className="flex gap-2 mb-3 overflow-x-auto no-scrollbar">
             <button
               onClick={() => setFilterType("all")}
