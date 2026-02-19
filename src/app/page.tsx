@@ -85,7 +85,7 @@ export default function HomePage() {
           <p className="text-[var(--color-error)] font-medium mb-1">Error al cargar datos</p>
           <p className="text-[var(--color-text-secondary)] text-xs">{error}</p>
           <p className="text-[var(--color-text-secondary)] text-xs mt-2">
-            Asegurate de configurar tu TMDB_API_KEY en <code className="bg-[var(--color-bg-tertiary)] px-1 rounded">.env.local</code>
+            Local: <code className="bg-[var(--color-bg-tertiary)] px-1 rounded">.env.local</code>. Vercel: Settings → Environment Variables.
           </p>
         </div>
       )}

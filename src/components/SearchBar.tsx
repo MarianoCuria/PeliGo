@@ -44,10 +44,17 @@ export default function SearchBar({ initialQuery = "" }: { initialQuery?: string
             : "bg-[var(--color-bg-secondary)]"
         }`}
       >
-        <Search
-          size={20}
-          className="absolute left-4 text-[var(--color-text-secondary)] pointer-events-none"
-        />
+        <button
+          type="submit"
+          className={`absolute left-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full active:scale-95 transition-all touch-manipulation ${
+            query.trim()
+              ? "text-white bg-[var(--color-accent)] shadow-lg shadow-[var(--color-accent)]/40"
+              : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+          }`}
+          aria-label="Buscar"
+        >
+          <Search size={18} strokeWidth={2.5} />
+        </button>
         <input
           ref={inputRef}
           type="text"
