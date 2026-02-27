@@ -34,6 +34,9 @@ export const metadata: Metadata = {
     "Buscá películas y series, encontrá en qué plataforma verlas en Argentina. Streaming, alquiler y compra. Hecho en Argentina.",
   keywords: ["películas", "series", "streaming", "Argentina", "dónde ver", "Netflix", "Disney", "Prime"],
   manifest: "/manifest.json",
+  verification:{
+    google: "google-site-verification: google80aff8e59a1f3470.html",
+  },
   openGraph: {
     type: "website",
     locale: "es_AR",
