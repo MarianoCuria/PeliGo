@@ -22,11 +22,32 @@ export const viewport: Viewport = {
   maximumScale: 1,
 };
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://peligo.app";
+
 export const metadata: Metadata = {
-  title: "PeliGo — Encontrá dónde verlo",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "PeliGo — Encontrá dónde verlo",
+    template: "%s | PeliGo",
+  },
   description:
-    "Buscá películas y series, encontrá en qué plataforma verlas. Hecho en Argentina.",
+    "Buscá películas y series, encontrá en qué plataforma verlas en Argentina. Streaming, alquiler y compra. Hecho en Argentina.",
+  keywords: ["películas", "series", "streaming", "Argentina", "dónde ver", "Netflix", "Disney", "Prime"],
   manifest: "/manifest.json",
+  openGraph: {
+    type: "website",
+    locale: "es_AR",
+    url: siteUrl,
+    siteName: "PeliGo",
+    title: "PeliGo — Encontrá dónde verlo",
+    description: "Buscá películas y series, encontrá en qué plataforma verlas en Argentina.",
+    // Añadí public/og.png (1200x630) para mejorar la vista en redes.
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PeliGo — Encontrá dónde verlo",
+    description: "Buscá películas y series, encontrá en qué plataforma verlas en Argentina.",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
