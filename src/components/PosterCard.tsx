@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { Star } from "lucide-react";
 import type { NormalizedTitle } from "@/lib/tmdb";
+import { visiblePlatformsForUser } from "@/lib/platform-match";
+import { useUserPlatforms } from "@/lib/user-platforms";
 import PosterImage from "./PosterImage";
 import PlatformBadge from "./PlatformBadge";
 
@@ -18,6 +20,9 @@ export default function PosterCard({
   rank?: number;
   showPlatforms?: boolean;
 }) {
+  const { slugs, hasSelection } = useUserPlatforms();
+  const visiblePlatforms = visiblePlatformsForUser(title.platforms ?? [], slugs, 2);
+
   return (
     <Link
       href={`/title/${title.id}`}
@@ -52,11 +57,21 @@ export default function PosterCard({
               {title.year}
             </span>
           </div>
-          {showPlatforms && title.platforms && title.platforms.length > 0 && (
+          {showPlatforms &&
+            (!hasSelection
+              ? title.platforms && title.platforms.length > 0
+              : visiblePlatforms.length > 0) && (
             <div className="flex items-center gap-1 mt-1.5 flex-wrap">
-              {title.platforms.slice(0, 2).map((p) => (
-                <PlatformBadge key={p.slug + p.type} platform={p} size="sm" />
-              ))}
+              {(hasSelection ? visiblePlatforms : title.platforms!.slice(0, 2)).map(
+                (p) => (
+                  <PlatformBadge
+                    key={p.slug + p.type}
+                    platform={p}
+                    size="sm"
+                    highlight={hasSelection}
+                  />
+                )
+              )}
             </div>
           )}
         </div>

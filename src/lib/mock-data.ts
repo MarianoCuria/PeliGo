@@ -30,17 +30,7 @@ export interface Title {
   trendScore?: number;
 }
 
-export const PLATFORMS_CATALOG = [
-  { name: "Netflix", slug: "netflix", color: "#E50914" },
-  { name: "Amazon Prime Video", slug: "amazon", color: "#00A8E1" },
-  { name: "Disney+", slug: "disney", color: "#113CCF" },
-  { name: "HBO Max", slug: "hbo", color: "#B535F6" },
-  { name: "Paramount+", slug: "paramount", color: "#0064FF" },
-  { name: "Apple TV+", slug: "apple", color: "#555555" },
-  { name: "Star+", slug: "star", color: "#C724B1" },
-  { name: "Mubi", slug: "mubi", color: "#001489" },
-  { name: "Crunchyroll", slug: "crunchyroll", color: "#F47521" },
-];
+export { PLATFORMS_CATALOG, PLATFORM_CATALOG } from "./platform-match";
 
 const platformLogo = (slug: string) => {
   const logos: Record<string, string> = {

@@ -8,6 +8,11 @@ import SearchBar from "@/components/SearchBar";
 import PosterImage from "@/components/PosterImage";
 import PlatformBadge from "@/components/PlatformBadge";
 import { fetchSearch, type NormalizedTitle, type PersonResult } from "@/lib/api";
+import {
+  hasMatchOnUserPlatforms,
+  visiblePlatformsForUser,
+} from "@/lib/platform-match";
+import { useUserPlatforms } from "@/lib/user-platforms";
 
 const RECENT_SEARCHES_KEY = "peligo_recent";
 
@@ -32,6 +37,7 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 function SearchResults() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
+  const { slugs: userSlugs } = useUserPlatforms();
   const [rawResults, setRawResults] = useState<NormalizedTitle[]>([]);
   const [totalResults, setTotalResults] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -229,6 +235,7 @@ function SearchResults() {
               href={`/title/${title.id}`}
               className="flex gap-3 p-3 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 transition-all duration-200 animate-fade-in-up"
               style={{ animationDelay: `${Math.min(i, 10) * 50}ms` }}
+              data-testid="search-result-card"
             >
               <div className="w-[80px] h-[120px] rounded-lg overflow-hidden shrink-0">
                 <PosterImage
@@ -272,12 +279,18 @@ function SearchResults() {
                     </span>
                   )}
                 </div>
-                <div className="flex flex-wrap gap-1.5 mt-2">
-                  {title.platforms.slice(0, 3).map((p) => (
+                <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                  {hasMatchOnUserPlatforms(title.platforms, userSlugs) && (
+                    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-[var(--color-accent)]/15 text-[var(--color-accent)]">
+                      En tu plataforma
+                    </span>
+                  )}
+                  {visiblePlatformsForUser(title.platforms, userSlugs, 3).map((p) => (
                     <PlatformBadge
                       key={p.slug + p.type}
                       platform={p}
                       size="sm"
+                      highlight={userSlugs.length > 0}
                     />
                   ))}
                   {title.platforms.length === 0 && (

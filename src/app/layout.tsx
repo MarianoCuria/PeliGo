@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
+import AlertChecker from "@/components/AlertChecker";
 
 const inter = Inter({
   variable: "--font-body",
@@ -69,6 +70,7 @@ export default function RootLayout({
         <main className="min-h-screen pb-20 max-w-[1200px] mx-auto">
           {children}
         </main>
+        <AlertChecker />
         <BottomNav />
       </body>
     </html>
