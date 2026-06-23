@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   User,
   Tv,
@@ -15,27 +16,18 @@ import {
   ChevronRight,
   Check,
 } from "lucide-react";
-import { PLATFORMS_CATALOG } from "@/lib/mock-data";
+import { PLATFORM_CATALOG, useUserPlatforms } from "@/lib/user-platforms";
+import { useAlerts } from "@/lib/use-alerts";
 
-const MENU_ITEMS = [
-  { icon: Bell, label: "Alertas", href: "#", badge: "3" },
+const STATIC_MENU_ITEMS = [
   { icon: Heart, label: "Favoritos", href: "/favorites" },
   { icon: HelpCircle, label: "Ayuda", href: "#" },
 ];
 
 export default function ProfilePage() {
   const [isDark, setIsDark] = useState(true);
-  const [userPlatforms, setUserPlatforms] = useState<string[]>([
-    "netflix",
-    "amazon",
-    "disney",
-  ]);
-
-  const togglePlatform = (slug: string) => {
-    setUserPlatforms((prev) =>
-      prev.includes(slug) ? prev.filter((p) => p !== slug) : [...prev, slug]
-    );
-  };
+  const { toggle: togglePlatform, isSelected } = useUserPlatforms();
+  const { unreadCount } = useAlerts();
 
   return (
     <div className="px-4 pt-6">
@@ -73,8 +65,8 @@ export default function ProfilePage() {
           Seleccioná los servicios que tenés para filtrar resultados
         </p>
         <div className="grid grid-cols-3 gap-2">
-          {PLATFORMS_CATALOG.map((p) => {
-            const isActive = userPlatforms.includes(p.slug);
+          {PLATFORM_CATALOG.map((p) => {
+            const isActive = isSelected(p.slug);
             return (
               <button
                 key={p.slug}
@@ -107,7 +99,28 @@ export default function ProfilePage() {
 
       {/* Menu Items */}
       <section className="mb-6 space-y-1">
-        {MENU_ITEMS.map((item) => (
+        <Link
+          href="/alerts"
+          className="flex items-center justify-between py-3.5 px-4 rounded-xl bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <Bell size={20} className="text-[var(--color-text-secondary)]" />
+            <span className="text-sm font-medium">Alertas</span>
+          </div>
+          <div className="flex items-center gap-2">
+            {unreadCount > 0 && (
+              <span className="px-2 py-0.5 rounded-full bg-[var(--color-accent)] text-xs font-bold text-white">
+                {unreadCount}
+              </span>
+            )}
+            <ChevronRight
+              size={16}
+              className="text-[var(--color-text-secondary)]"
+            />
+          </div>
+        </Link>
+
+        {STATIC_MENU_ITEMS.map((item) => (
           <a
             key={item.label}
             href={item.href}
@@ -118,11 +131,6 @@ export default function ProfilePage() {
               <span className="text-sm font-medium">{item.label}</span>
             </div>
             <div className="flex items-center gap-2">
-              {item.badge && (
-                <span className="px-2 py-0.5 rounded-full bg-[var(--color-accent)] text-xs font-bold text-white">
-                  {item.badge}
-                </span>
-              )}
               <ChevronRight
                 size={16}
                 className="text-[var(--color-text-secondary)]"

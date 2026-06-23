@@ -15,9 +15,11 @@ interface Platform {
 export default function PlatformBadge({
   platform,
   size = "md",
+  highlight = false,
 }: {
   platform: Platform;
   size?: "sm" | "md" | "lg";
+  highlight?: boolean;
 }) {
   const [imgError, setImgError] = useState(false);
 
@@ -39,7 +41,9 @@ export default function PlatformBadge({
 
   return (
     <span
-      className={`inline-flex items-center rounded-md font-medium ${sizeClasses[size]} ${typeColors[platform.type]}`}
+      className={`inline-flex items-center rounded-md font-medium ${sizeClasses[size]} ${typeColors[platform.type]} ${
+        highlight ? "ring-1 ring-[var(--color-accent)]" : ""
+      }`}
     >
       {hasRealLogo && !imgError ? (
         // eslint-disable-next-line @next/next/no-img-element
