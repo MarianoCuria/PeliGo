@@ -14,7 +14,7 @@ export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<NormalizedTitle[]>([]);
 
   useEffect(() => {
-    queueMicrotask(() => setFavorites(getFavorites()));
+    setFavorites(getFavorites());
   }, []);
 
   // Re-read when returning to this page (e.g. after removing a favorite elsewhere)

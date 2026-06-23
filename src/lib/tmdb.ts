@@ -1,8 +1,4 @@
-import { catalogSlugFromTmdbProvider } from "./platform-match";
-
-// Allow pointing TMDB at a local mock server in tests/CI (e.g. e2e).
-// Defaults to the real API in dev/prod.
-const BASE_URL = process.env.TMDB_BASE_URL || "https://api.themoviedb.org/3";
+const BASE_URL = "https://api.themoviedb.org/3";
 const IMG_BASE = "https://image.tmdb.org/t/p";
 
 function apiKey(): string {
@@ -96,7 +92,6 @@ export interface NormalizedTitle {
 export interface NormalizedPlatform {
   name: string;
   slug: string;
-  providerId?: number;
   logo: string;
   type: "stream" | "rent" | "buy";
   quality: string;
@@ -162,27 +157,6 @@ function slugify(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
-function addNormalizedProvider(
-  platforms: NormalizedPlatform[],
-  p: WatchProvider,
-  type: "stream" | "rent" | "buy",
-  link: string
-) {
-  const catalogSlug = catalogSlugFromTmdbProvider(p.provider_id, p.provider_name);
-  const slug = catalogSlug ?? slugify(p.provider_name);
-  if (platforms.some((x) => x.slug === slug && x.type === type)) return;
-
-  platforms.push({
-    name: p.provider_name,
-    slug,
-    providerId: p.provider_id,
-    logo: posterUrl(p.logo_path, "w185"),
-    type,
-    quality: "HD",
-    link,
-  });
-}
-
 function normalizeProviders(data: TMDBTitle): NormalizedPlatform[] {
   const wp = data["watch/providers"]?.results?.AR;
   if (!wp) return [];
@@ -192,17 +166,40 @@ function normalizeProviders(data: TMDBTitle): NormalizedPlatform[] {
 
   if (wp.flatrate) {
     for (const p of wp.flatrate) {
-      addNormalizedProvider(platforms, p, "stream", link);
+      platforms.push({
+        name: p.provider_name,
+        slug: slugify(p.provider_name),
+        logo: posterUrl(p.logo_path, "w185"),
+        type: "stream",
+        quality: "HD",
+        link,
+      });
     }
   }
   if (wp.rent) {
     for (const p of wp.rent) {
-      addNormalizedProvider(platforms, p, "rent", link);
+      if (platforms.some((x) => x.slug === slugify(p.provider_name))) continue;
+      platforms.push({
+        name: p.provider_name,
+        slug: slugify(p.provider_name),
+        logo: posterUrl(p.logo_path, "w185"),
+        type: "rent",
+        quality: "HD",
+        link,
+      });
     }
   }
   if (wp.buy) {
     for (const p of wp.buy) {
-      addNormalizedProvider(platforms, p, "buy", link);
+      if (platforms.some((x) => x.slug === slugify(p.provider_name))) continue;
+      platforms.push({
+        name: p.provider_name,
+        slug: slugify(p.provider_name),
+        logo: posterUrl(p.logo_path, "w185"),
+        type: "buy",
+        quality: "HD",
+        link,
+      });
     }
   }
 

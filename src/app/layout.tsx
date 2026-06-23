@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
-import AlertChecker from "@/components/AlertChecker";
 
 const inter = Inter({
   variable: "--font-body",
@@ -23,35 +22,11 @@ export const viewport: Viewport = {
   maximumScale: 1,
 };
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://peligo.app";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: "PeliGo — Encontrá dónde verlo",
-    template: "%s | PeliGo",
-  },
+  title: "PeliGo — Encontrá dónde verlo",
   description:
-    "Buscá películas y series, encontrá en qué plataforma verlas en Argentina. Streaming, alquiler y compra. Hecho en Argentina.",
-  keywords: ["películas", "series", "streaming", "Argentina", "dónde ver", "Netflix", "Disney", "Prime"],
+    "Buscá películas y series, encontrá en qué plataforma verlas. Hecho en Argentina.",
   manifest: "/manifest.json",
-  verification:{
-    google: "google-site-verification: google80aff8e59a1f3470.html",
-  },
-  openGraph: {
-    type: "website",
-    locale: "es_AR",
-    url: siteUrl,
-    siteName: "PeliGo",
-    title: "PeliGo — Encontrá dónde verlo",
-    description: "Buscá películas y series, encontrá en qué plataforma verlas en Argentina.",
-    // Añadí public/og.png (1200x630) para mejorar la vista en redes.
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "PeliGo — Encontrá dónde verlo",
-    description: "Buscá películas y series, encontrá en qué plataforma verlas en Argentina.",
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -70,7 +45,6 @@ export default function RootLayout({
         <main className="min-h-screen pb-20 max-w-[1200px] mx-auto">
           {children}
         </main>
-        <AlertChecker />
         <BottomNav />
       </body>
     </html>
