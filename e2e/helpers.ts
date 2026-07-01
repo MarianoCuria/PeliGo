@@ -9,9 +9,9 @@ export const KEYS = {
 
 /** Catalog ids served by the mock TMDB server (see e2e/mocks/tmdb-server.mjs). */
 export const TITLES = {
-  netflix: { id: "m-1001", tmdbId: 1001, type: "movie", title: "Pelicula Netflix" },
-  mubi: { id: "m-1002", tmdbId: 1002, type: "movie", title: "Pelicula Mubi" },
-  disney: { id: "t-2001", tmdbId: 2001, type: "series", title: "Serie Disney" },
+  netflix: { id: "m-1001", tmdbId: 1001, type: "movie", title: "Netflix Movie" },
+  mubi: { id: "m-1002", tmdbId: 1002, type: "movie", title: "Mubi Movie" },
+  disney: { id: "t-2001", tmdbId: 2001, type: "series", title: "Disney Series" },
 } as const;
 
 export type SeedAlert = {
@@ -61,8 +61,6 @@ export async function readStorage<T = unknown>(
   page: Page,
   key: string
 ): Promise<T | null> {
-  return page.evaluate((k) => {
-    const raw = localStorage.getItem(k);
-    return raw ? (JSON.parse(raw) as unknown) : null;
-  }, key);
+  const raw = await page.evaluate((k) => localStorage.getItem(k), key);
+  return raw ? (JSON.parse(raw) as T) : null;
 }
