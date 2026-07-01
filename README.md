@@ -1,81 +1,66 @@
 # PeliGo
 
-App para buscar dónde ver películas y series (Argentina). Next.js + TMDB.
+**Encontrá dónde verlo.**
+
+PeliGo es una Progressive Web App para Argentina que permite buscar cualquier película o serie y saber al instante en qué plataforma de streaming está disponible. [Demo en vivo](https://peligo.vercel.app/).
 
 ---
 
-## Subir cambios a GitHub (si `git push` falla)
+## Stack implementado (MVP)
 
-El remoto está en **SSH** (`git@github.com:MarianoCuria/PeliGo.git`). Si ves `Permission denied (publickey)`:
+| Capa | Tecnología |
+|------|------------|
+| Frontend | Next.js 16 (App Router, React 19) |
+| Datos | TMDB API (proxied vía API Routes de Next.js) |
+| Persistencia de usuario | `localStorage` (plataformas elegidas, favoritos, alertas) |
+| Deploy | Vercel |
+| Testing E2E | Playwright, mock server propio de TMDB, CI en GitHub Actions |
 
-### Opción A – Usar HTTPS con token (rápido)
-
-En la terminal, dentro de esta carpeta:
-
-```bash
-git remote set-url origin https://github.com/MarianoCuria/PeliGo.git
-git push -u origin feature/peligo-full-app
-```
-
-Cuando pida usuario: tu usuario de GitHub. Cuando pida contraseña: un **Personal Access Token** (no la contraseña de la cuenta).
-
-- Crear token: GitHub → Settings → Developer settings → Personal access tokens → Generate new token (classic). Darle permiso `repo`. Copiar el token y pegarlo cuando git pida la contraseña.
-
-### Opción B – Configurar SSH
-
-```bash
-# Ver si tenés clave
-ls -la ~/.ssh/id_*.pub
-
-# Si no hay, crear una
-ssh-keygen -t ed25519 -C "tu@email.com" -f ~/.ssh/id_ed25519 -N ""
-
-# Copiar la clave pública (luego pegarla en GitHub)
-cat ~/.ssh/id_ed25519.pub
-```
-
-En GitHub: **Settings** → **SSH and GPG keys** → **New SSH key** → pegar el contenido de `id_ed25519.pub`. Después:
-
-```bash
-git push -u origin feature/peligo-full-app
-```
-
-Luego en GitHub abrís un **Pull Request** de la rama `feature/peligo-full-app` hacia `main`.
+> El MVP prioriza velocidad de entrega sobre infraestructura: no hay backend propio ni base de datos — el estado del usuario vive en el cliente. La carpeta [`docs/architecture`](docs/architecture/04-backend-architecture.md) documenta la visión de arquitectura a más largo plazo (backend modular, Postgres, Redis) pensada para cuando el producto necesite cuentas de usuario reales y sincronización entre dispositivos.
 
 ---
 
-## Getting Started
+## Testing
 
-First, run the development server:
+La suite de e2e (`e2e/`) está pensada para ser determinística y correr en CI sin depender de la API real de TMDB ni de rate limits:
+
+- **Mock server de TMDB** (`e2e/mocks/tmdb-server.mjs`): un servidor HTTP mínimo que responde con la forma real de la API de TMDB, seedeado con un catálogo fijo de títulos de prueba.
+- **Page Object Model** (`e2e/pages/`) + **fixtures** (`e2e/fixtures/test.ts`) para mantener los specs legibles y evitar duplicar locators.
+- **Seed de `localStorage`** (`e2e/helpers.ts`) para arrancar cada test en un estado conocido (plataformas, favoritos, alertas) sin pasar por la UI.
+- **Global setup** (`e2e/setup/global-setup.ts`) que genera un `storageState` reusable (usuario con Netflix ya configurado) para specs que no necesitan repetir el onboarding.
+- Cobertura: búsqueda, favoritos, alertas, "mis plataformas".
 
 ```bash
+npm ci
+npx playwright install --with-deps chromium
+npm run test:e2e          # headless
+npm run test:e2e:ui       # modo interactivo
+npm run test:e2e:report   # ver el último reporte HTML
+```
+
+CI: [`.github/workflows/e2e.yml`](.github/workflows/e2e.yml) corre la suite en cada push/PR contra `main` y sube el reporte de Playwright como artifact.
+
+---
+
+## Documentación del producto
+
+- [`docs/branding/`](docs/branding/01-identidad-visual.md) — identidad visual, paleta, tipografías
+- [`docs/mockups/`](docs/mockups/03-mockups-uiux.md) — mockups de UI/UX
+- [`docs/architecture/`](docs/architecture/04-backend-architecture.md) — visión de arquitectura a futuro y estructura del MVP
+- [`docs/pitch/`](docs/pitch/06-investor-pitch.md) — pitch de producto
+- [`specs/`](specs/) — specs, planes y modelos de datos de cada feature (flujo tipo spec-driven development: `spec.md` → `plan.md` → `tasks.md`)
+
+---
+
+## Desarrollo local
+
+```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Variables de entorno requeridas (`.env.local`): `TMDB_API_KEY`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# PeliGo
+*Hecho con amor en Argentina.*

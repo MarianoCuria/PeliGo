@@ -4,7 +4,7 @@ import { createServer } from "node:http";
  * Minimal mock of the TMDB v3 API, just enough for the PeliGo e2e suite.
  *
  * The app points at this via TMDB_BASE_URL=http://127.0.0.1:<port>/3
- * Responses mimic the raw TMDB shapes consumed by src/src/lib/tmdb.ts.
+ * Responses mimic the raw TMDB shapes consumed by src/lib/tmdb.ts.
  */
 
 const PORT = Number(process.env.E2E_MOCK_PORT || 8790);
@@ -51,9 +51,9 @@ const CATALOG = {
     providerKeys: ["netflix"],
     raw: {
       id: 1001,
-      title: "Pelicula Netflix",
-      original_title: "Netflix Movie",
-      overview: "Una pelicula de prueba disponible en Netflix.",
+      title: "Netflix Movie",
+      original_title: "Netflix Original Movie",
+      overview: "A test movie available on Netflix.",
       poster_path: "/p1001.jpg",
       backdrop_path: "/b1001.jpg",
       release_date: "2025-01-10",
@@ -69,9 +69,9 @@ const CATALOG = {
     providerKeys: ["mubi"],
     raw: {
       id: 1002,
-      title: "Pelicula Mubi",
-      original_title: "Mubi Movie",
-      overview: "Una pelicula de prueba disponible solo en Mubi.",
+      title: "Mubi Movie",
+      original_title: "Mubi Original Movie",
+      overview: "A test movie available only on Mubi.",
       poster_path: "/p1002.jpg",
       backdrop_path: "/b1002.jpg",
       release_date: "2025-02-15",
@@ -87,9 +87,9 @@ const CATALOG = {
     providerKeys: ["disney"],
     raw: {
       id: 2001,
-      name: "Serie Disney",
-      original_name: "Disney Series",
-      overview: "Una serie de prueba disponible en Disney+.",
+      name: "Disney Series",
+      original_name: "Disney Original Series",
+      overview: "A test series available on Disney+.",
       poster_path: "/p2001.jpg",
       backdrop_path: "/b2001.jpg",
       first_air_date: "2025-03-01",
@@ -122,13 +122,13 @@ function detailResponse(id) {
   if (!entry) return null;
   return {
     ...entry.raw,
-    genres: (entry.raw.genre_ids || []).map((gid) => ({ id: gid, name: "Genero" })),
+    genres: (entry.raw.genre_ids || []).map((gid) => ({ id: gid, name: "Genre" })),
     credits: {
       cast: [
-        { name: "Actriz Uno", character: "Personaje", profile_path: null, order: 0 },
-        { name: "Actor Dos", character: "Personaje", profile_path: null, order: 1 },
+        { name: "Actress One", character: "Character", profile_path: null, order: 0 },
+        { name: "Actor Two", character: "Character", profile_path: null, order: 1 },
       ],
-      crew: [{ name: "Director Test", job: "Director" }],
+      crew: [{ name: "Test Director", job: "Director" }],
     },
     "watch/providers": { results: { AR: arProviders(entry.providerKeys) } },
     similar: { results: [] },

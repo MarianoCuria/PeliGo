@@ -241,6 +241,9 @@ export default function TitleDetailClient({
           </button>
           <div className="flex gap-2">
             <button
+              data-testid="favorite-toggle"
+              aria-pressed={isFavorite}
+              aria-label={isFavorite ? "Quitar de favoritos" : "Agregar a favoritos"}
               onClick={() => {
                 if (!title) return;
                 if (isFavorite) {
