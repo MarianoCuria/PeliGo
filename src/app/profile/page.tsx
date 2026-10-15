@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { User, Tv, Bell, Heart, ChevronRight, Check } from "lucide-react";
+import { User, Tv, Bell, Heart, ChevronRight, Check, MessageCircle } from "lucide-react";
 import { PLATFORM_CATALOG, useUserPlatforms } from "@/lib/user-platforms";
 import { useAlerts } from "@/lib/use-alerts";
 import InstallAppButton from "@/components/InstallAppButton";
 import SiteFooter from "@/components/SiteFooter";
+
+// Where "Mandanos sugerencias" points (a form, WhatsApp link, mailto…). Hidden when unset.
+const FEEDBACK_URL = process.env.NEXT_PUBLIC_FEEDBACK_URL;
 
 export default function ProfilePage() {
   const { toggle: togglePlatform, isSelected } = useUserPlatforms();
@@ -96,6 +99,21 @@ export default function ProfilePage() {
           </div>
           <ChevronRight size={16} className="text-[var(--color-text-secondary)]" />
         </Link>
+
+        {FEEDBACK_URL && (
+          <a
+            href={FEEDBACK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between py-3.5 px-4 rounded-xl bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <MessageCircle size={20} className="text-[var(--color-text-secondary)]" />
+              <span className="text-sm font-medium">Mandanos sugerencias</span>
+            </div>
+            <ChevronRight size={16} className="text-[var(--color-text-secondary)]" />
+          </a>
+        )}
 
         <InstallAppButton />
       </section>

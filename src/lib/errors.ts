@@ -1,7 +1,5 @@
 import { TmdbError } from "./tmdb";
-
-export const GENERIC_ERROR_MESSAGE = "No pudimos cargar los datos. Probá de nuevo en un rato.";
-export const NOT_FOUND_MESSAGE = "No encontramos este título.";
+import { GENERIC_ERROR_MESSAGE, NOT_FOUND_MESSAGE } from "./messages";
 
 /**
  * Logs the real error on the server and returns a message that is safe to show

@@ -312,8 +312,9 @@ export async function searchMulti(query: string, page = 1): Promise<SearchRespon
     .filter((r): r is TMDBTitle => r.media_type === "movie" || r.media_type === "tv")
     .filter((r) => r.poster_path);
 
-  // Pick the most popular person match (if any)
-  const topPerson = personResults
+  // Pick the most popular person match (if any). Only on the first page:
+  // their filmography is merged once, later pages are plain title results.
+  const topPerson = page !== 1 ? undefined : personResults
     .filter((p) => p.popularity > 5)
     .sort((a, b) => b.popularity - a.popularity)[0];
 

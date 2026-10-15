@@ -27,6 +27,17 @@ test.describe("Search", () => {
     await expect(search.resultByTitle(TITLES.netflix.title)).toHaveCount(0);
   });
 
+  test("loads the next page of results with 'Cargar más'", async ({ search }) => {
+    await search.goto("saga");
+
+    await expect(search.results).toHaveCount(20);
+    await search.loadMore.click();
+
+    await expect(search.results).toHaveCount(30);
+    await expect(search.resultByTitle("Saga Movie 30")).toBeVisible();
+    await expect(search.loadMore).toHaveCount(0);
+  });
+
   test("shows the no-results state", async ({ search }) => {
     await search.goto("zzznoresults");
     await expect(search.noResults).toBeVisible();

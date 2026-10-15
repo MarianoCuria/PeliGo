@@ -8,6 +8,8 @@ import {
   Share2,
   Star,
   Bell,
+  Bookmark,
+  Eye,
   ExternalLink,
   Film,
   Tv,
@@ -19,7 +21,7 @@ import {
 import PosterImage from "@/components/PosterImage";
 import PosterCard from "@/components/PosterCard";
 import { fetchTitle, type NormalizedTitle, type NormalizedPlatform } from "@/lib/api";
-import { isFavorite as checkFavorite, addFavorite, removeFavorite } from "@/lib/favorites";
+import { addToList, isInList, removeFromList, subscribeLists, type ListName } from "@/lib/lists";
 import { partitionPlatforms, hasMatchOnUserPlatforms } from "@/lib/platform-match";
 import { watchUrlFor } from "@/lib/platform-links";
 import { useUserPlatforms } from "@/lib/user-platforms";
@@ -51,7 +53,12 @@ export default function TitleDetailClient({
   const [title, setTitle] = useState<NormalizedTitle | null>(initialTitle);
   const [similar, setSimilar] = useState<NormalizedTitle[]>(initialSimilar);
   const [error, setError] = useState(initialError ?? "");
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [membership, setMembership] = useState<Record<ListName, boolean>>({
+    favorites: false,
+    watchlist: false,
+    watched: false,
+  });
+  const isFavorite = membership.favorites;
   const [showFullOverview, setShowFullOverview] = useState(false);
   const [showOtherPlatforms, setShowOtherPlatforms] = useState(false);
   const [alertToast, setAlertToast] = useState("");
@@ -70,12 +77,22 @@ export default function TitleDetailClient({
 
   useEffect(() => {
     const sync = () => {
-      setIsFavorite(checkFavorite(id));
       const alert = getAlertByTitleId(id);
       setExistingAlertId(alert?.id ?? null);
     };
     queueMicrotask(sync);
     return subscribeAlerts(sync);
+  }, [id]);
+
+  useEffect(() => {
+    const sync = () =>
+      setMembership({
+        favorites: isInList("favorites", id),
+        watchlist: isInList("watchlist", id),
+        watched: isInList("watched", id),
+      });
+    queueMicrotask(sync);
+    return subscribeLists(sync);
   }, [id]);
 
   // Refetch on client when navigating to a different id (client-side nav)
@@ -164,6 +181,14 @@ export default function TitleDetailClient({
     }
 
     window.setTimeout(() => setAlertToast(""), 4000);
+  };
+
+  const toggleList = (list: ListName) => {
+    if (membership[list]) {
+      removeFromList(list, title.id);
+    } else {
+      addToList(list, title);
+    }
   };
 
   const showToast = (message: string) => {
@@ -279,16 +304,7 @@ export default function TitleDetailClient({
               data-testid="favorite-toggle"
               aria-pressed={isFavorite}
               aria-label={isFavorite ? "Quitar de favoritos" : "Agregar a favoritos"}
-              onClick={() => {
-                if (!title) return;
-                if (isFavorite) {
-                  removeFavorite(title.id);
-                  setIsFavorite(false);
-                } else {
-                  addFavorite(title);
-                  setIsFavorite(true);
-                }
-              }}
+              onClick={() => toggleList("favorites")}
               className={`w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center transition-all duration-300 ${
                 isFavorite
                   ? "bg-[var(--color-accent)] scale-110"
@@ -509,6 +525,37 @@ export default function TitleDetailClient({
             </span>
           </button>
         )}
+
+        <div className="grid grid-cols-2 gap-2 mb-6">
+          <button
+            type="button"
+            onClick={() => toggleList("watchlist")}
+            aria-pressed={membership.watchlist}
+            data-testid="watchlist-toggle"
+            className={`flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-colors ${
+              membership.watchlist
+                ? "border-[var(--color-secondary)] bg-[var(--color-secondary)]/15 text-[var(--color-text-primary)]"
+                : "border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+            }`}
+          >
+            <Bookmark size={18} className={membership.watchlist ? "fill-current" : ""} />
+            Por ver
+          </button>
+          <button
+            type="button"
+            onClick={() => toggleList("watched")}
+            aria-pressed={membership.watched}
+            data-testid="watched-toggle"
+            className={`flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-colors ${
+              membership.watched
+                ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
+                : "border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+            }`}
+          >
+            <Eye size={18} />
+            {membership.watched ? "Vista" : "Ya la vi"}
+          </button>
+        </div>
 
         {title.overview && (
           <section className="mb-6">

@@ -137,6 +137,25 @@ function detailResponse(id) {
 
 // ---------- Routing ----------
 
+const SAGA_SIZE = 30;
+
+function sagaResults() {
+  return Array.from({ length: SAGA_SIZE }, (_, i) => ({
+    id: 5000 + i,
+    media_type: "movie",
+    title: `Saga Movie ${String(i + 1).padStart(2, "0")}`,
+    original_title: `Saga Movie ${String(i + 1).padStart(2, "0")}`,
+    overview: "Synthetic search result.",
+    poster_path: `/saga${i}.jpg`,
+    backdrop_path: null,
+    release_date: "2020-01-01",
+    vote_average: 7,
+    vote_count: 1000 - i,
+    popularity: 100 - i,
+    genre_ids: [18],
+  }));
+}
+
 function json(res, status, body) {
   const payload = JSON.stringify(body);
   res.writeHead(status, {
@@ -203,6 +222,20 @@ const server = createServer((req, res) => {
   // /search/multi
   if (tmdbPath === "/search/multi") {
     const query = (url.searchParams.get("query") || "").toLowerCase();
+
+    // "saga" returns a long, paginated list to exercise "Cargar más".
+    if (query === "saga") {
+      const page = Number(url.searchParams.get("page") || "1");
+      const pageSize = 20;
+      const all = sagaResults();
+      return json(res, 200, {
+        page,
+        results: all.slice((page - 1) * pageSize, page * pageSize),
+        total_pages: Math.ceil(all.length / pageSize),
+        total_results: all.length,
+      });
+    }
+
     const results = Object.values(CATALOG)
       .map((entry) => ({ ...entry.raw, media_type: entry.type }))
       .filter((r) => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState, useCallback, useMemo } from "react";
+import { Suspense, useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { ArrowLeft, Star, Film, Tv, Loader2, ArrowUpDown, Users, UserRound } from "lucide-react";
 import Link from "next/link";
 import SearchBar from "@/components/SearchBar";
@@ -39,30 +39,60 @@ function SearchResults() {
   const query = searchParams.get("q") || "";
   const { slugs: userSlugs } = useUserPlatforms();
   const [rawResults, setRawResults] = useState<NormalizedTitle[]>([]);
-  const [totalResults, setTotalResults] = useState(0);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  // Latest query requested; responses for older queries are ignored.
+  const activeQuery = useRef("");
   const [error, setError] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("relevancia");
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [person, setPerson] = useState<PersonResult | undefined>();
 
   const doSearch = useCallback(async (q: string) => {
+    activeQuery.current = q;
     if (!q.trim()) return;
     setLoading(true);
     setError("");
     setPerson(undefined);
     try {
       const data = await fetchSearch(q);
+      if (activeQuery.current !== q) return;
       setRawResults(data.results);
-      setTotalResults(data.totalResults);
+      setPage(1);
+      setTotalPages(data.totalPages);
       setPerson(data.person);
       saveRecentSearch(q);
     } catch (e: unknown) {
+      if (activeQuery.current !== q) return;
       setError(e instanceof Error ? e.message : "Error al buscar");
     } finally {
-      setLoading(false);
+      if (activeQuery.current === q) setLoading(false);
     }
   }, []);
+
+  const loadMore = async () => {
+    const q = query;
+    const nextPage = page + 1;
+    setLoadingMore(true);
+    try {
+      const data = await fetchSearch(q, nextPage);
+      if (activeQuery.current !== q) return;
+      setRawResults((prev) => {
+        const seen = new Set(prev.map((t) => t.id));
+        return [...prev, ...data.results.filter((t) => !seen.has(t.id))];
+      });
+      setPage(nextPage);
+      setTotalPages(data.totalPages);
+    } catch {
+      // keep what we already have; the button stays available to retry
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  const hasMore = page < totalPages;
 
   // Reset sort/filter when the query changes (adjusting state during render, not in an effect).
   const [lastQuery, setLastQuery] = useState(query);
@@ -164,9 +194,6 @@ function SearchResults() {
       {/* Filters & Sort */}
       {!loading && rawResults.length > 0 && (
         <>
-          <p className="text-sm text-[var(--color-text-secondary)] mb-2">
-            {totalResults} resultado{totalResults !== 1 ? "s" : ""}
-          </p>
           <div className="flex gap-2 mb-3 overflow-x-auto no-scrollbar">
             <button
               onClick={() => setFilterType("all")}
@@ -308,6 +335,18 @@ function SearchResults() {
               </div>
             </Link>
           ))}
+          {hasMore && (
+            <button
+              type="button"
+              onClick={() => void loadMore()}
+              disabled={loadingMore}
+              data-testid="search-load-more"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-[var(--color-border)] text-sm font-semibold text-[var(--color-text-primary)] hover:border-[var(--color-accent)]/40 transition-colors disabled:opacity-60"
+            >
+              {loadingMore && <Loader2 size={16} className="animate-spin" />}
+              {loadingMore ? "Cargando..." : "Cargar más resultados"}
+            </button>
+          )}
         </div>
       )}
 
