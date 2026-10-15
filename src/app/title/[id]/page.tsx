@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { getTitleDetail, getSimilar } from "@/lib/tmdb";
 import TitleDetailClient from "./TitleDetailClient";
+import { SITE_URL } from "@/lib/site";
+import { toPublicError } from "@/lib/errors";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://peligo.app";
 
 function parseId(id: string): { tmdbId: number; type: "movie" | "series" } | null {
   const isMovie = id.startsWith("m-");
@@ -36,7 +37,7 @@ export async function generateMetadata({
         title: `Dónde ver ${title.title} en Argentina | PeliGo`,
         description,
         type: "website",
-        url: `${siteUrl}/title/${id}`,
+        url: `${SITE_URL}/title/${id}`,
         images: title.posterPath?.startsWith("http")
           ? [{ url: title.posterPath, width: 500, height: 750, alt: title.title }]
           : undefined,
@@ -83,7 +84,7 @@ export default async function TitleDetailPage({
     title = titleData;
     similar = similarData;
   } catch (e) {
-    error = e instanceof Error ? e.message : "Error al cargar";
+    error = toPublicError(e, "title").message;
   }
 
   const jsonLd =

@@ -64,10 +64,16 @@ function SearchResults() {
     }
   }, []);
 
-  useEffect(() => {
+  // Reset sort/filter when the query changes (adjusting state during render, not in an effect).
+  const [lastQuery, setLastQuery] = useState(query);
+  if (query !== lastQuery) {
+    setLastQuery(query);
     setSortBy("relevancia");
     setFilterType("all");
-    doSearch(query);
+  }
+
+  useEffect(() => {
+    queueMicrotask(() => void doSearch(query));
   }, [query, doSearch]);
 
   const results = useMemo(() => {

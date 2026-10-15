@@ -1,5 +1,6 @@
 import { getTrending, getNowPlaying } from "@/lib/tmdb";
 import HomeClient from "./HomeClient";
+import { toPublicError } from "@/lib/errors";
 
 export default async function HomePage() {
   let trending: Awaited<ReturnType<typeof getTrending>> = [];
@@ -14,7 +15,7 @@ export default async function HomePage() {
     trending = trendingData;
     nowPlaying = nowPlayingData;
   } catch (e) {
-    error = e instanceof Error ? e.message : "Error al cargar datos";
+    error = toPublicError(e, "home").message;
   }
 
   return (

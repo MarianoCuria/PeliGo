@@ -1,13 +1,11 @@
-import { isCatalogSlug } from "./platform-match";
+import { isCatalogSlug, LEGACY_SLUG_ALIASES } from "./platform-match";
 
 export {
   PLATFORM_CATALOG,
-  PLATFORMS_CATALOG,
   TMDB_PROVIDER_TO_SLUG,
   catalogSlugFromTmdbProvider,
   resolveCatalogSlug,
   partitionPlatforms,
-  orderPlatformsForUser,
   visiblePlatformsForUser,
   hasMatchOnUserPlatforms,
   filterTitlesForUserPlatforms,
@@ -21,7 +19,9 @@ export const STORAGE_KEY = "peligo_user_platforms";
 export const USER_PLATFORMS_CHANGED_EVENT = "peligo:user-platforms-changed";
 
 function filterValidSlugs(slugs: string[]): string[] {
-  return [...new Set(slugs.filter((s) => isCatalogSlug(s)))];
+  return [
+    ...new Set(slugs.map((s) => LEGACY_SLUG_ALIASES[s] ?? s).filter((s) => isCatalogSlug(s))),
+  ];
 }
 
 export function getUserPlatformSlugs(): string[] {

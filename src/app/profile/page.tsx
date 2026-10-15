@@ -1,31 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import {
-  User,
-  Tv,
-  Bell,
-  Heart,
-  Moon,
-  Sun,
-  Globe,
-  Smartphone,
-  HelpCircle,
-  LogOut,
-  ChevronRight,
-  Check,
-} from "lucide-react";
+import { User, Tv, Bell, Heart, ChevronRight, Check } from "lucide-react";
 import { PLATFORM_CATALOG, useUserPlatforms } from "@/lib/user-platforms";
 import { useAlerts } from "@/lib/use-alerts";
-
-const STATIC_MENU_ITEMS = [
-  { icon: Heart, label: "Favoritos", href: "/favorites" },
-  { icon: HelpCircle, label: "Ayuda", href: "#" },
-];
+import InstallAppButton from "@/components/InstallAppButton";
+import SiteFooter from "@/components/SiteFooter";
 
 export default function ProfilePage() {
-  const [isDark, setIsDark] = useState(true);
   const { toggle: togglePlatform, isSelected } = useUserPlatforms();
   const { unreadCount } = useAlerts();
 
@@ -37,22 +19,6 @@ export default function ProfilePage() {
         <h1 className="font-[var(--font-display)] text-2xl font-bold">
           Mi Perfil
         </h1>
-      </div>
-
-      {/* Avatar */}
-      <div className="flex flex-col items-center mb-6">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-secondary)] flex items-center justify-center mb-3 shadow-lg">
-          <span className="text-2xl font-bold text-white font-[var(--font-display)]">
-            MR
-          </span>
-        </div>
-        <h2 className="text-lg font-semibold">Martín Rodriguez</h2>
-        <p className="text-sm text-[var(--color-text-secondary)]">
-          martin@email.com
-        </p>
-        <button className="mt-2 px-4 py-1.5 rounded-lg border border-[var(--color-border)] text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-accent)] transition-colors">
-          Editar perfil
-        </button>
       </div>
 
       {/* My Platforms */}
@@ -120,85 +86,21 @@ export default function ProfilePage() {
           </div>
         </Link>
 
-        {STATIC_MENU_ITEMS.map((item) => (
-          <a
-            key={item.label}
-            href={item.href}
-            className="flex items-center justify-between py-3.5 px-4 rounded-xl bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <item.icon size={20} className="text-[var(--color-text-secondary)]" />
-              <span className="text-sm font-medium">{item.label}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <ChevronRight
-                size={16}
-                className="text-[var(--color-text-secondary)]"
-              />
-            </div>
-          </a>
-        ))}
-
-        {/* Theme Toggle */}
-        <div className="flex items-center justify-between py-3.5 px-4 rounded-xl bg-[var(--color-bg-secondary)]">
+        <Link
+          href="/favorites"
+          className="flex items-center justify-between py-3.5 px-4 rounded-xl bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
+        >
           <div className="flex items-center gap-3">
-            {isDark ? (
-              <Moon size={20} className="text-[var(--color-text-secondary)]" />
-            ) : (
-              <Sun size={20} className="text-[var(--color-text-secondary)]" />
-            )}
-            <span className="text-sm font-medium">Tema</span>
+            <Heart size={20} className="text-[var(--color-text-secondary)]" />
+            <span className="text-sm font-medium">Favoritos</span>
           </div>
-          <button
-            onClick={() => setIsDark(!isDark)}
-            className={`relative w-12 h-7 rounded-full transition-colors duration-300 ${
-              isDark ? "bg-[var(--color-secondary)]" : "bg-[var(--color-bg-tertiary)]"
-            }`}
-          >
-            <span
-              className={`absolute top-0.5 w-6 h-6 rounded-full bg-white transition-transform duration-300 shadow-md ${
-                isDark ? "left-[22px]" : "left-0.5"
-              }`}
-            />
-          </button>
-        </div>
+          <ChevronRight size={16} className="text-[var(--color-text-secondary)]" />
+        </Link>
 
-        {/* Language */}
-        <div className="flex items-center justify-between py-3.5 px-4 rounded-xl bg-[var(--color-bg-secondary)]">
-          <div className="flex items-center gap-3">
-            <Globe size={20} className="text-[var(--color-text-secondary)]" />
-            <span className="text-sm font-medium">Idioma</span>
-          </div>
-          <span className="text-sm text-[var(--color-text-secondary)]">
-            Español 🇦🇷
-          </span>
-        </div>
-
-        {/* Install PWA */}
-        <button className="flex items-center justify-between w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[var(--color-accent)]/10 to-[var(--color-secondary)]/10 border border-[var(--color-accent)]/20 hover:border-[var(--color-accent)]/40 transition-colors">
-          <div className="flex items-center gap-3">
-            <Smartphone size={20} className="text-[var(--color-accent)]" />
-            <span className="text-sm font-medium text-[var(--color-accent)]">
-              Instalar app
-            </span>
-          </div>
-          <ChevronRight size={16} className="text-[var(--color-accent)]" />
-        </button>
+        <InstallAppButton />
       </section>
 
-      {/* Logout */}
-      <button className="flex items-center gap-3 w-full py-3.5 px-4 rounded-xl hover:bg-[var(--color-error)]/10 transition-colors mb-6">
-        <LogOut size={20} className="text-[var(--color-error)]" />
-        <span className="text-sm font-medium text-[var(--color-error)]">
-          Cerrar sesión
-        </span>
-      </button>
-
-      {/* Footer */}
-      <div className="text-center text-xs text-[var(--color-text-secondary)] pb-4 space-y-1">
-        <p>Hecho con ❤️ en Argentina</p>
-        <p>All rights reserved © MarianoCuria</p>
-      </div>
+      <SiteFooter />
     </div>
   );
 }

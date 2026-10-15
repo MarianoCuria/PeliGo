@@ -169,6 +169,17 @@ const server = createServer((req, res) => {
     });
   }
 
+  // /trending/movie/week | /trending/tv/week
+  m = tmdbPath.match(/^\/trending\/(movie|tv)\/(day|week)$/);
+  if (m) {
+    return json(res, 200, {
+      page: 1,
+      results: discoverResults(m[1]),
+      total_pages: 1,
+      total_results: discoverResults(m[1]).length,
+    });
+  }
+
   // /movie/{id}/watch/providers | /tv/{id}/watch/providers
   m = tmdbPath.match(/^\/(movie|tv)\/(\d+)\/watch\/providers$/);
   if (m) {

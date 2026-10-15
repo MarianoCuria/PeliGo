@@ -21,6 +21,7 @@ import PosterCard from "@/components/PosterCard";
 import { fetchTitle, type NormalizedTitle, type NormalizedPlatform } from "@/lib/api";
 import { isFavorite as checkFavorite, addFavorite, removeFavorite } from "@/lib/favorites";
 import { partitionPlatforms, hasMatchOnUserPlatforms } from "@/lib/platform-match";
+import { watchUrlFor } from "@/lib/platform-links";
 import { useUserPlatforms } from "@/lib/user-platforms";
 import {
   canCreateAlert,
@@ -165,7 +166,37 @@ export default function TitleDetailClient({
     window.setTimeout(() => setAlertToast(""), 4000);
   };
 
-  const renderPlatformRow = (platform: NormalizedPlatform) => (
+  const showToast = (message: string) => {
+    setAlertToast(message);
+    window.setTimeout(() => setAlertToast(""), 3000);
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    const text = `Mirá dónde ver ${title.title} en PeliGo`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: title.title, text, url });
+      } catch {
+        // user cancelled
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      showToast("Link copiado");
+    } catch {
+      window.open(
+        `https://wa.me/?text=${encodeURIComponent(`${text}: ${url}`)}`,
+        "_blank",
+        "noopener,noreferrer"
+      );
+    }
+  };
+
+  const renderPlatformRow = (platform: NormalizedPlatform) => {
+    const watchUrl = watchUrlFor(platform, title.title);
+    return (
     <div
       key={platform.slug + platform.type}
       className="flex items-center justify-between p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] transition-all"
@@ -209,17 +240,21 @@ export default function TitleDetailClient({
           </div>
         </div>
       </div>
-      <a
-        href={platform.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hidden flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--color-accent)] text-white text-sm font-semibold hover:bg-[var(--color-accent-hover)] transition-colors shadow-[0_4px_20px_rgba(230,57,70,0.25)]"
-      >
-        Ver
-        <ExternalLink size={14} />
-      </a>
+      {watchUrl && (
+        <a
+          href={watchUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--color-accent)] text-white text-sm font-semibold hover:bg-[var(--color-accent-hover)] transition-colors shadow-[0_4px_20px_rgba(230,57,70,0.25)]"
+          aria-label={`Ver en ${platform.name}`}
+        >
+          Ver
+          <ExternalLink size={14} />
+        </a>
+      )}
     </div>
-  );
+    );
+  };
 
   return (
     <div className="animate-fade-in-up">
@@ -262,7 +297,13 @@ export default function TitleDetailClient({
             >
               <Heart size={20} className={isFavorite ? "fill-white" : ""} />
             </button>
-            <button className="hidden w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center hover:bg-black/70 transition-colors">
+            <button
+              type="button"
+              onClick={() => void handleShare()}
+              aria-label="Compartir"
+              data-testid="share-button"
+              className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center hover:bg-black/70 transition-colors"
+            >
               <Share2 size={20} />
             </button>
           </div>
@@ -402,6 +443,20 @@ export default function TitleDetailClient({
             </div>
           )}
         </section>
+
+        {title.platforms.length > 0 && (
+          <p className="text-[11px] text-[var(--color-text-secondary)] -mt-3 mb-6">
+            Disponibilidad provista por{" "}
+            <a
+              href="https://www.justwatch.com/ar"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              JustWatch
+            </a>
+          </p>
+        )}
 
         {alertToast && (
           <div className="mb-4 p-3 rounded-xl bg-[var(--color-accent)]/15 border border-[var(--color-accent)]/30 text-sm text-center">

@@ -7,10 +7,7 @@ import PosterCard from "@/components/PosterCard";
 import { getFavorites } from "@/lib/favorites";
 import type { NormalizedTitle } from "@/lib/api";
 
-const TABS = ["Favoritos", "Por ver", "Vistos"];
-
 export default function FavoritesPage() {
-  const [activeTab, setActiveTab] = useState(0);
   const [favorites, setFavorites] = useState<NormalizedTitle[]>([]);
 
   useEffect(() => {
@@ -24,7 +21,7 @@ export default function FavoritesPage() {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  const titles: NormalizedTitle[] = activeTab === 0 ? favorites : [];
+  const titles = favorites;
 
   return (
     <div className="px-4 pt-6">
@@ -34,23 +31,6 @@ export default function FavoritesPage() {
         <h1 className="font-[var(--font-display)] text-2xl font-bold">
           Mi lista
         </h1>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex gap-1 mb-5 bg-[var(--color-bg-secondary)] rounded-xl p-1">
-        {TABS.map((tab, i) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(i)}
-            className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
-              activeTab === i
-                ? "bg-[var(--color-accent)] text-white shadow-lg"
-                : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
       </div>
 
       {/* Content */}

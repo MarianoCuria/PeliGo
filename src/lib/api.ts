@@ -4,18 +4,6 @@ export type { NormalizedTitle, NormalizedPlatform, PersonResult };
 
 const BASE = "";
 
-export async function fetchHome(): Promise<{
-  trending: NormalizedTitle[];
-  nowPlaying: NormalizedTitle[];
-}> {
-  const res = await fetch(`${BASE}/api/home`);
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error((body as { error?: string }).error || "Error al cargar home");
-  }
-  return res.json();
-}
-
 export async function fetchSearch(
   query: string,
   page = 1
