@@ -13,6 +13,10 @@ export class FavoritesPage {
     await this.page.goto("/favorites");
   }
 
+  tab(list: "favorites" | "watchlist" | "watched"): Locator {
+    return this.page.getByTestId(`list-tab-${list}`);
+  }
+
   item(title: string): Locator {
     return this.page.getByText(title);
   }

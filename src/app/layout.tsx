@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import AlertChecker from "@/components/AlertChecker";
@@ -73,6 +74,7 @@ export default function RootLayout({
         </main>
         <AlertChecker />
         <ServiceWorkerRegister />
+        <Analytics />
         <BottomNav />
       </body>
     </html>

@@ -15,6 +15,10 @@ export default async function HomePage() {
     trending = trendingData;
     nowPlaying = nowPlayingData;
   } catch (e) {
+    // At runtime, rethrow so ISR keeps serving the last good page instead of
+    // caching an error for an hour (falls back to app/error.tsx if there is none).
+    // At build time, render the error banner so a TMDB hiccup can't break a deploy.
+    if (process.env.NEXT_PHASE !== "phase-production-build") throw e;
     error = toPublicError(e, "home").message;
   }
 

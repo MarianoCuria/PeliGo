@@ -10,6 +10,8 @@ export class TitlePage {
   readonly configurePlatformsPrompt: Locator;
   readonly limitReached: Locator;
   readonly favoriteToggle: Locator;
+  readonly watchlistToggle: Locator;
+  readonly watchedToggle: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -23,6 +25,8 @@ export class TitlePage {
     this.configurePlatformsPrompt = page.getByText(/para crear alertas/);
     this.limitReached = page.getByText(/máximo de 3 alertas activas/);
     this.favoriteToggle = page.getByTestId("favorite-toggle");
+    this.watchlistToggle = page.getByTestId("watchlist-toggle");
+    this.watchedToggle = page.getByTestId("watched-toggle");
   }
 
   async goto(titleId: string): Promise<void> {
