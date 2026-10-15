@@ -12,6 +12,13 @@ function apiKey(): string {
   return key;
 }
 
+export class TmdbError extends Error {
+  constructor(readonly status: number, statusText: string) {
+    super(`TMDB error: ${status} ${statusText}`);
+    this.name = "TmdbError";
+  }
+}
+
 async function tmdbFetch<T>(path: string, params: Record<string, string> = {}): Promise<T> {
   const url = new URL(`${BASE_URL}${path}`);
   url.searchParams.set("api_key", apiKey());
@@ -22,7 +29,7 @@ async function tmdbFetch<T>(path: string, params: Record<string, string> = {}): 
 
   const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
   if (!res.ok) {
-    throw new Error(`TMDB error: ${res.status} ${res.statusText}`);
+    throw new TmdbError(res.status, res.statusText);
   }
   return res.json();
 }
@@ -375,34 +382,23 @@ export async function getTrending(
   mediaType: "all" | "movie" | "tv" = "all",
   timeWindow: "day" | "week" = "day"
 ): Promise<NormalizedTitle[]> {
-  // Use discover endpoint filtered by watch_region=AR so we ONLY get
-  // titles available on at least one platform in Argentina.
-  const discoverParams = {
-    sort_by: "popularity.desc",
-    watch_region: "AR",
-    with_watch_monetization_types: "flatrate|rent|buy",
-    "vote_count.gte": "50",
-  };
-
-  if (timeWindow === "day") {
-    // "Hoy" = most popular right now
-    // No date filter, just popularity sort — TMDB's popularity already reflects recency
-  } else {
-    // "Esta semana" = released or updated recently
-    const weekAgo = new Date(Date.now() - 14 * 86400000).toISOString().slice(0, 10);
-    Object.assign(discoverParams, { "primary_release_date.gte": weekAgo });
-  }
-
   const types: ("movie" | "tv")[] =
     mediaType === "all" ? ["movie", "tv"] : [mediaType];
 
   const allResults: NormalizedTitle[] = [];
 
   for (const type of types) {
-    const data = await tmdbFetch<{ results: TMDBTitle[] }>(
-      `/discover/${type}`,
-      discoverParams
-    );
+    const data =
+      timeWindow === "day"
+        ? // "Hoy" = most popular right now among titles available in Argentina
+          await tmdbFetch<{ results: TMDBTitle[] }>(`/discover/${type}`, {
+            sort_by: "popularity.desc",
+            watch_region: "AR",
+            with_watch_monetization_types: "flatrate|rent|buy",
+            "vote_count.gte": "50",
+          })
+        : // "Esta semana" = TMDB weekly trending; AR availability is checked below
+          await tmdbFetch<{ results: TMDBTitle[] }>(`/trending/${type}/week`);
 
     const normalized = data.results
       .filter((r) => r.poster_path)

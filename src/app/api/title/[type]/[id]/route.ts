@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTitleDetail, getSimilar } from "@/lib/tmdb";
+import { toPublicError } from "@/lib/errors";
 
 export async function GET(
   _req: NextRequest,
@@ -20,7 +21,7 @@ export async function GET(
     ]);
     return NextResponse.json({ title, similar });
   } catch (e: unknown) {
-    const message = e instanceof Error ? e.message : "Error desconocido";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const { message, status } = toPublicError(e, "api/title");
+    return NextResponse.json({ error: message }, { status });
   }
 }

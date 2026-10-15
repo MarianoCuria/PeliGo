@@ -3,6 +3,8 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import AlertChecker from "@/components/AlertChecker";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import { SITE_URL } from "@/lib/site";
 
 const inter = Inter({
   variable: "--font-body",
@@ -20,13 +22,11 @@ export const viewport: Viewport = {
   themeColor: "#0D0D0D",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
 };
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://peligo.app";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "PeliGo — Encontrá dónde verlo",
     template: "%s | PeliGo",
@@ -35,22 +35,23 @@ export const metadata: Metadata = {
     "Buscá películas y series, encontrá en qué plataforma verlas en Argentina. Streaming, alquiler y compra. Hecho en Argentina.",
   keywords: ["películas", "series", "streaming", "Argentina", "dónde ver", "Netflix", "Disney", "Prime"],
   manifest: "/manifest.json",
-  verification:{
-    google: "google-site-verification: google80aff8e59a1f3470.html",
-  },
   openGraph: {
     type: "website",
     locale: "es_AR",
-    url: siteUrl,
+    url: SITE_URL,
     siteName: "PeliGo",
     title: "PeliGo — Encontrá dónde verlo",
     description: "Buscá películas y series, encontrá en qué plataforma verlas en Argentina.",
-    // Añadí public/og.png (1200x630) para mejorar la vista en redes.
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "PeliGo — Encontrá dónde verlo" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "PeliGo — Encontrá dónde verlo",
     description: "Buscá películas y series, encontrá en qué plataforma verlas en Argentina.",
+    images: ["/og.png"],
+  },
+  icons: {
+    apple: "/apple-touch-icon.png",
   },
   appleWebApp: {
     capable: true,
@@ -71,6 +72,7 @@ export default function RootLayout({
           {children}
         </main>
         <AlertChecker />
+        <ServiceWorkerRegister />
         <BottomNav />
       </body>
     </html>

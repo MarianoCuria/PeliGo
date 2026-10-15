@@ -6,6 +6,7 @@ import { Flame, Sparkles, Bell } from "lucide-react";
 import SearchBar from "@/components/SearchBar";
 import PosterCard from "@/components/PosterCard";
 import SectionHeader from "@/components/SectionHeader";
+import SiteFooter from "@/components/SiteFooter";
 import type { NormalizedTitle } from "@/lib/api";
 import { filterTitlesForUserPlatforms } from "@/lib/platform-match";
 import { useUserPlatforms } from "@/lib/user-platforms";
@@ -88,14 +89,14 @@ export default function HomeClient({
           </p>
           <div className="flex gap-2 flex-wrap" data-testid="home-recent-searches-list">
             {recentSearches.slice(0, 5).map((s, index) => (
-              <a
+              <Link
                 key={s}
                 href={`/search?q=${encodeURIComponent(s)}`}
                 className="px-3 py-1.5 rounded-lg bg-[var(--color-bg-secondary)] text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors border border-[var(--color-border)]"
                 data-testid={`home-recent-search-${index}`}
               >
                 {s}
-              </a>
+              </Link>
             ))}
           </div>
         </div>
@@ -106,11 +107,8 @@ export default function HomeClient({
           className="mb-6 p-4 rounded-xl bg-[var(--color-error)]/10 border border-[var(--color-error)]/30 text-sm"
           data-testid="home-error-banner"
         >
-          <p className="text-[var(--color-error)] font-medium mb-1">Error al cargar datos</p>
+          <p className="text-[var(--color-error)] font-medium mb-1">Algo salió mal</p>
           <p className="text-[var(--color-text-secondary)] text-xs">{error}</p>
-          <p className="text-[var(--color-text-secondary)] text-xs mt-2">
-            Local: <code className="bg-[var(--color-bg-tertiary)] px-1 rounded">.env.local</code>. Vercel: Settings → Environment Variables.
-          </p>
         </div>
       )}
 
@@ -163,13 +161,7 @@ export default function HomeClient({
         )}
       </section>
 
-      <div
-        className="text-center text-xs text-[var(--color-text-secondary)] pt-8 pb-4 space-y-1"
-        data-testid="home-footer"
-      >
-        <p>Hecho con ❤️ en Argentina</p>
-        <p>All rights reserved © MarianoCuria</p>
-      </div>
+      <SiteFooter />
     </div>
   );
 }

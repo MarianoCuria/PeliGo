@@ -30,23 +30,37 @@ export async function requestNotificationPermission(): Promise<
   return result;
 }
 
-export function showAlertNotification(params: {
+export async function showAlertNotification(params: {
   alertId: string;
   title: string;
   body: string;
   url: string;
-}): void {
+}): Promise<void> {
   if (getNotificationSupport() === "unsupported") return;
   if (Notification.permission !== "granted") return;
 
-  try {
-    const notification = new Notification(params.title, {
-      body: params.body,
-      tag: params.alertId,
-      icon: "/icon-192.png",
-      data: { url: params.url },
-    });
+  const options: NotificationOptions = {
+    body: params.body,
+    tag: params.alertId,
+    icon: "/icon-192.png",
+    badge: "/icon-192.png",
+    data: { url: params.url },
+  };
 
+  // Android Chrome and installed iOS PWAs only allow notifications through a
+  // service worker; `new Notification()` throws there.
+  try {
+    const registration = await navigator.serviceWorker?.getRegistration();
+    if (registration) {
+      await registration.showNotification(params.title, options);
+      return;
+    }
+  } catch {
+    // fall through to the page-level API
+  }
+
+  try {
+    const notification = new Notification(params.title, options);
     notification.onclick = () => {
       window.focus();
       notification.close();

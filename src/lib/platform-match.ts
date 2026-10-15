@@ -12,25 +12,42 @@ export const PLATFORM_CATALOG: readonly PlatformCatalogEntry[] = [
   { name: "Disney+", slug: "disney", color: "#113CCF" },
   { name: "HBO Max", slug: "hbo", color: "#B535F6" },
   { name: "Paramount+", slug: "paramount", color: "#0064FF" },
-  { name: "Apple TV+", slug: "apple", color: "#555555" },
-  { name: "Star+", slug: "star", color: "#C724B1" },
+  { name: "Apple TV", slug: "apple", color: "#555555" },
+  { name: "Movistar TV", slug: "movistar", color: "#019DF4" },
+  { name: "Claro video", slug: "claro", color: "#DA291C" },
+  { name: "DIRECTV GO", slug: "directv", color: "#0A6EBD" },
+  { name: "Mercado Play", slug: "mercadoplay", color: "#2D3277" },
+  { name: "Universal+", slug: "universal", color: "#0B3D91" },
+  { name: "ViX", slug: "vix", color: "#FF5A00" },
+  { name: "Pluto TV", slug: "pluto", color: "#2C2C2C" },
   { name: "Mubi", slug: "mubi", color: "#001489" },
   { name: "Crunchyroll", slug: "crunchyroll", color: "#F47521" },
 ] as const;
 
-/** @deprecated Use PLATFORM_CATALOG */
-export const PLATFORMS_CATALOG = PLATFORM_CATALOG;
-
 const CATALOG_SLUGS = new Set(PLATFORM_CATALOG.map((p) => p.slug));
 
+/** Slugs that were in the catalog before and now map to another one (e.g. Star+ merged into Disney+). */
+export const LEGACY_SLUG_ALIASES: Record<string, string> = {
+  star: "disney",
+};
+
+// Provider IDs as returned by TMDB for watch_region=AR.
 export const TMDB_PROVIDER_TO_SLUG: Record<number, string> = {
   8: "netflix",
   119: "amazon",
   337: "disney",
-  384: "hbo",
+  1899: "hbo",
+  384: "hbo", // legacy HBO Max id
   531: "paramount",
   350: "apple",
-  619: "star",
+  339: "movistar",
+  167: "claro",
+  467: "directv",
+  2302: "mercadoplay",
+  1889: "universal", // Universal+ Amazon Channel (Universal+ in AR is sold through channels)
+  457: "vix",
+  300: "pluto",
+  619: "disney", // legacy Star+ id
   11: "mubi",
   283: "crunchyroll",
 };
@@ -99,15 +116,6 @@ export function visiblePlatformsForUser(
   const { mine, hasUserConfig } = partitionPlatforms(platforms, userSlugs);
   if (!hasUserConfig) return platforms.slice(0, limit);
   return mine.slice(0, limit);
-}
-
-/** @deprecated Use visiblePlatformsForUser */
-export function orderPlatformsForUser(
-  platforms: NormalizedPlatform[],
-  userSlugs: string[],
-  limit = 3
-): NormalizedPlatform[] {
-  return visiblePlatformsForUser(platforms, userSlugs, limit);
 }
 
 export function hasMatchOnUserPlatforms(

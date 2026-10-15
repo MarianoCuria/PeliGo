@@ -56,7 +56,7 @@ export async function checkSingleAlert(
         createdAt: now,
       });
 
-      showAlertNotification({
+      void showAlertNotification({
         alertId: alert.id,
         title: alert.title,
         body: `${message} en tus plataformas.`,
